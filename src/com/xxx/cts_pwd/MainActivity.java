@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import net.youmi.android.AdManager;
 import net.youmi.android.banner.AdSize;
 import net.youmi.android.banner.AdView;
-import net.youmi.android.spot.SpotDialogListener;
-import net.youmi.android.spot.SpotManager;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -50,12 +48,12 @@ public class MainActivity extends BaseActivity {
 
 		String pwd = util.getPWD();
 
+		initView();
 		if (!pwd.equals("-1")) {
 			dialogDeal(true);
 		} else {
 			dialogDeal(false);
 		}
-
 	}
 	private void initView() {
 		setContentView(R.layout.main);
@@ -107,13 +105,13 @@ public class MainActivity extends BaseActivity {
 						// startActivity(in);
 						dialogDeal(false);
 						break;
+					// case 4 :
+					// in = new Intent(MainActivity.this, DataManager.class);
+					// startActivity(in);
+					// Toast.makeText(getApplicationContext(), "建设中...",
+					// Toast.LENGTH_SHORT).show();
+					// break;
 					case 4 :
-						in = new Intent(MainActivity.this, DataManager.class);
-						startActivity(in);
-						Toast.makeText(getApplicationContext(), "建设中...",
-								Toast.LENGTH_SHORT).show();
-						break;
-					case 5 :
 						in = new Intent(MainActivity.this, Notice.class);
 						startActivity(in);
 						break;
@@ -139,27 +137,16 @@ public class MainActivity extends BaseActivity {
 		map.put("name", "设置密码");
 		map.put("icon", R.drawable.five);
 		lists.add(map);
-		map = new HashMap<String, Object>();
-		map.put("name", "数据管理");
-		map.put("icon", R.drawable.four);
-		lists.add(map);
+		// map = new HashMap<String, Object>();
+		// map.put("name", "数据管理");
+		// map.put("icon", R.drawable.four);
+		// lists.add(map);
 		map = new HashMap<String, Object>();
 		map.put("name", "声明");
 		map.put("icon", R.drawable.six);
 		lists.add(map);
 
 		return lists;
-	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
-		super.onActivityResult(requestCode, resultCode, data);
-
-		if (requestCode == Contants.REQUEST_CODE
-				&& resultCode == Contants.RESULT_CODE) {
-			Log.i("XXX", "----------data---" + data.getStringExtra("content"));
-		}
 	}
 
 	private void dialogDeal(final boolean isSettingPWD) {
@@ -175,14 +162,15 @@ public class MainActivity extends BaseActivity {
 
 		final EditText editText = (EditText) view.findViewById(R.id.editText);
 
-		new AlertDialog.Builder(this).setTitle(title)
-				.setIcon(android.R.drawable.ic_dialog_info).setView(view)
-				.setPositiveButton("确定", new OnClickListener() {
+		final Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(title).setIcon(android.R.drawable.ic_dialog_info)
+				.setView(view).setPositiveButton("确定", new OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						String input = editText.getText().toString();
 						if (isSettingPWD) {
 							Boolean isCorrect = util.comparedPP(input);
 							if (isCorrect) {
+
 								initView();
 							} else {
 								dialogDeal(true);
@@ -191,12 +179,12 @@ public class MainActivity extends BaseActivity {
 							}
 						} else {
 							util.settingMainPWD(input);
-							initView();
 						}
 					}
 				}).setNegativeButton("取消", new OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
-						dialogDeal(true);
+
+						finish();
 					}
 				}).show();
 	}
